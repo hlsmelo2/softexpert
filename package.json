@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "cypress": "^12.17.0"
+  },
+  "name": "softexpert",
+  "description": "This project is my first test for the Soft Expert selection process",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Henrique Melo",
+  "license": "ISC"
+}
