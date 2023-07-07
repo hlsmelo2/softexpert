@@ -3,10 +3,10 @@ extends layout/layout.php
 block main
     section#home
         h1 Home
-        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
+        include components/warning.php
         h2 Lista de produtos
         ul#showcase.wrapper-1
-            li(v-for="(product, index) of list" :key="index")
+            li.card-style(v-for="(product, index) of list" :key="index")
                 div
                     //- a(:href="getBuyUrl(product.id)")
                     h3 {{ product.name }}
@@ -21,6 +21,13 @@ block main
                         button(@click="addToCart(product)" class="btn btn-primary") Add To Cart
     style.
         ul#showcase { text-align: center; }
+
+        ul#showcase li {
+            display: inline-block;
+            width: 30.3%;
+        }
+
+        ul#showcase img { width: 80%; }
         
         se-price,
         se-product-type,

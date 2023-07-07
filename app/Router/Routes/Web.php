@@ -8,11 +8,13 @@ class Web{
             Constants::PATH => '/',
             Constants::DESTINATION => 'home.php.pug',
             Constants::METHOD => Constants::GET,
+            Constants::PROTECTED => Constants::DEFAULT,
         ],
         [
             Constants::PATH => '/home',
             Constants::DESTINATION => 'home.php.pug',
             Constants::METHOD => Constants::GET,
+            Constants::PROTECTED => Constants::DEFAULT,
         ],
         [
             Constants::PATH => '/login',
@@ -23,16 +25,19 @@ class Web{
             Constants::PATH => '/register/products',
             Constants::DESTINATION => 'register/product.php.pug',
             Constants::METHOD => Constants::GET,
+            Constants::PROTECTED => Constants::DEFAULT,
         ],
         [
             Constants::PATH => '/register/product-types',
             Constants::DESTINATION => 'register/product-types.php.pug',
-            Constants::METHOD => Constants::GET,    
+            Constants::METHOD => Constants::GET, 
+            Constants::PROTECTED => Constants::DEFAULT,   
         ],
         [
             Constants::PATH => '/register/taxes',
             Constants::DESTINATION => 'register/taxes.php.pug',
             Constants::METHOD => Constants::GET,
+            Constants::PROTECTED => Constants::DEFAULT,
         ],
         // [
         //     Constants::PATH => '/product/{product_id}',
@@ -43,6 +48,7 @@ class Web{
             Constants::PATH => '/buy',
             Constants::DESTINATION => 'buy.php.pug',
             Constants::METHOD => Constants::GET,
+            Constants::PROTECTED => Constants::DEFAULT,
         ],
     ];
 }

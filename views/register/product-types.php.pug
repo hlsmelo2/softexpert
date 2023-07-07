@@ -2,19 +2,19 @@ extends ../layout/layout.php
 
 block main
     section#register-product-type
-        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
-        table
-            thead
-                tr
-                    th ID
-                    th Name
-                    th Description
-            tbody
-                tr(v-for="(product, index) of list" :key="index")
-                    td {{ product.id }}
-                    td {{ product.name }}
-                    td {{ product.description }}
-                
+        include ../components/warning.php
+        div#list
+            table
+                thead
+                    tr
+                        th ID
+                        th Name
+                        th Description
+                tbody
+                    tr(v-for="(product, index) of list" :key="index")
+                        td {{ product.id }}
+                        td {{ product.name }}
+                        td {{ product.description }}
         h1 Product types
         form.wrapper-2(@submit.prevent.cancel="main.killForm()")
             div.line

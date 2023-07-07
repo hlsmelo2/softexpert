@@ -2,10 +2,10 @@ extends layout/layout.php
 
 block main
     section#buy
-        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
+        include components/warning.php
         h1 Buy
         ul#cart.wrapper-2
-            li(v-for="(item, index) of cart" :key="index")
+            li.card-style(v-for="(item, index) of cart" :key="index")
                 img(:src="item.product.image")
                 div.data
                     div.line

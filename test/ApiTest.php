@@ -68,7 +68,8 @@ class ApiTest extends TestCase {
         $product = [
             'name' => "Product {$count}",
             'description' => "Product {$count} description",
-            'image' => "Image {$count}",
+            'image' => '',
+            'image_file' => null,
             'quantity' => '10',
             'product_type_id' => '2',
             'price' => $this->get_money_increment(10, $count),

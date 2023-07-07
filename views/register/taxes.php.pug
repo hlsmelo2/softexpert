@@ -2,19 +2,19 @@ extends ../layout/layout.php
 
 block main
     section#register-tax
-        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
-        table
-            thead
-                tr
-                    th ID
-                    th Name
-                    th Value
-            tbody
-                tr(v-for="(tax, index) of list" :key="index")
-                    td {{ tax.id }}
-                    td {{ tax.name }}
-                    td {{ tax.value }}
-                
+        include ../components/warning.php
+        div#list
+            table
+                thead
+                    tr
+                        th ID
+                        th Name
+                        th Value
+                tbody
+                    tr(v-for="(tax, index) of list" :key="index")
+                        td {{ tax.id }}
+                        td {{ tax.name }}
+                        td {{ tax.value }}
         h1 Taxes
         form.wrapper-2(@submit.prevent.cancel="main.killForm()")
             div.line

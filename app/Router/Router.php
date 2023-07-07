@@ -4,6 +4,7 @@ namespace Work\Soft_Expert\Router;
 
 use Symfony\Component\VarDumper\VarDumper;
 use Work\Soft_Expert\Api;
+use Work\Soft_Expert\AuthGuard;
 use Work\Soft_Expert\Renderer;
 use Work\Soft_Expert\Router\Routes\Api as RoutesApi;
 use Work\Soft_Expert\Router\Routes\Web;
@@ -81,7 +82,8 @@ class Router {
         // VarDumper::dump($route);
 
         if ($route->method !== $_SERVER['REQUEST_METHOD']) {
-            die('This route dont accept the used method in request');
+            return false;
+            // die('This route dont accept the used method in request');
         }
 
         return true;
@@ -114,7 +116,7 @@ class Router {
             $route = (object) $route;
             // var_dump($route);
 
-            if (self::is_route($route) && self::is_method($route)) {
+            if (self::is_route($route) && self::is_method($route) && AuthGuard::authorized($route, $is_api_route)) {
                 self::handle_route($route, $is_api_route);    
                 
                 return true;

@@ -1,9 +1,0 @@
-
-Deverão ser enviados para análise:
-➢ Repositório no GitHub com acesso público para clonarmos o seu projeto;
-➢ O repositório deverá conter um README com as instruções para inicialização;
-➢ O backup do banco de dados pode estar na raiz do repositório.
-➢ Caso tenha feito deploy em algum servidor, enviar também a URL (não obrigatório)
-Dicas:
-❖ Para exportar o banco use o comando pg_dump;
-❖ Antes de nos enviar, faça um pg_restore para ver se foi tudo exportado como deveria.

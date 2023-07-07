@@ -6,6 +6,7 @@ use Work\Soft_Expert\DB\Models\Product;
 use Work\Soft_Expert\DB\Models\Product_Type;
 use Work\Soft_Expert\DB\Models\Sale;
 use Work\Soft_Expert\DB\Models\Tax;
+use Work\Soft_Expert\DB\Models\User;
 
 class Api {
     const PREFIX = '/api';
@@ -20,6 +21,29 @@ class Api {
     
     static public function get_products($params) {
         return json_encode( Product::read($params) );
+    }
+    
+    static public function register_user($params) {
+        if ( ! User::create($params) ) {
+            return self::get_response('error', 'An error occurred while trying to register the user');
+        };
+
+        return self::get_response('success', '', [
+            'message' => 'The user was registered',
+            'args' => $params,
+        ]);
+    }
+
+    static public function login($params) {
+        $token = AuthGuard::get_login_token((object) $params);
+
+        if ($token === null) {
+            return self::get_response('error', 'Login or password is wrong');
+        };
+
+        return self::get_response('success', '', [
+            'token' => $token,
+        ]);
     }
     
     static public function register_sale($params) {
