@@ -1,0 +1,22 @@
+{
+    "name": "work/softexpert",
+    "description": "This is my first teste for SoftExpert selection process",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Work\\Soft_Expert\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Henrique Melo",
+            "email": "hlsmelosantander@gmail.com"
+        }
+    ],
+    "require": {
+        "phug/phug": "^1.11",
+        "symfony/var-dumper": "^6.3",
+        "doctrine/dbal": "^3.6",
+        "firebase/php-jwt": "^6.8"
+    }
+}

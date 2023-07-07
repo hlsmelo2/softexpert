@@ -1,0 +1,114 @@
+extends layout/layout.php
+
+block main
+    section#home
+        h1 Home
+        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
+        h2 Lista de produtos
+        ul#showcase.wrapper-1
+            li(v-for="(product, index) of list" :key="index")
+                div
+                    //- a(:href="getBuyUrl(product.id)")
+                    h3 {{ product.name }}
+                    img(:src="product.image")
+                    p {{ product.description }}
+                    se-price {{ product.price }}
+                    se-product-type {{ product.type_name }}
+                    //- a(:href="getBuyUrl(product.id)")
+                    se-product-id {{ product.id }}
+                    div.buttons
+                        button(@click="removeFromCart(product)" class="btn btn-secondary") Remove From Cart
+                        button(@click="addToCart(product)" class="btn btn-primary") Add To Cart
+    style.
+        ul#showcase { text-align: center; }
+        
+        se-price,
+        se-product-type,
+        se-product-id { display: block; }
+
+    script.
+        main.vue = {
+            el: 'section#home',
+            data() {
+                return {
+                    cart: [],
+                    list: [],
+                    canShowMessage: false,
+                    alertMessage: '',
+                };
+            },
+            methods: {
+                getList() {
+                    const vue = this;
+                    const url = main.getApiUrl('products?full');
+
+                    main.getJSONRequest(url, 'GET')
+                        .then(function(json) { vue.list = json; });
+                },
+                fillProductTypes() {
+                    const vue = this;
+                    const url = main.getApiUrl('product-types');
+
+                    main.getJSONRequest(url, 'GET')
+                        .then(function(json) {
+                            vue.productTypesList = json;
+                            vue.input.product_type = main.isFilledArray(json) ? json[0].id : 0;
+                        });
+                },
+                showMessage(message) {
+                    this.canShowMessage = true;
+                    this.alertMessage = message;
+                },
+                hideMessage() {
+                    this.canShowMessage = false;
+                },
+                getBuyUrl(productId) {
+                    return '/buy/' + productId; 
+                },
+                saveCart(message) {
+                    localStorage.setItem( 'cart', JSON.stringify(this.cart) );
+                    this.showMessage(message);
+                },
+                getInCart(productId) {
+                    return this.cart.find(function(cartItem) {
+                        return cartItem.product.id === productId;
+                    });
+                },
+                addToCart(product) {
+                    const message = 'The product was added!';
+                    const cartItem = this.getInCart(product.id);
+
+                    if (cartItem !== undefined) {
+                        cartItem.quantity += 1;
+                        this.saveCart(message);
+
+                        return;
+                    }
+
+                    this.cart.push( { quantity: 1, product } );
+                    this.saveCart(message);
+                },
+                removeFromCart(product) {
+                    const cart = this.cart;
+                    const cartItem = this.getInCart(product.id);
+
+                    if (cartItem === undefined) {
+                        return;
+                    }
+                    
+                    cartItem.quantity -= 1;
+
+                    if (cartItem.quantity === 0) {
+                        this.cart = [].concat(
+                            cart.slice( 0, cart.indexOf(cartItem) ),
+                            cart.slice( cart.indexOf(cartItem) + 1 ),
+                        );
+                    }
+
+                    this.saveCart('The product was removed!');
+                },
+            },
+            mounted() {
+                this.getList();
+            },
+        };

@@ -1,0 +1,52 @@
+extends layout/layout.php
+
+block main
+    section#login
+        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
+        h1 Login
+        form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+            div.line
+                label Name
+                input(v-model="input.id" type="text" name="" class="form-control")
+            div.line
+                label Password
+                input(v-model="input.name" type="text" name="" class="form-control")
+            div.buttons
+                button(@click="register()" class="btn btn-primary") Sign in
+
+    script.
+        main.vue = {
+            el: 'section#login',
+            data() {
+                return {
+                    input: {
+                        name: 'Product name',
+                        password: 'Product description',
+                    },
+                    canShowMessage: false,
+                    alertMessage: '',
+                };
+            },
+            methods: {
+                showMessage(message) {
+                    this.canShowMessage = true;
+                    this.alertMessage = message;
+                },
+                hideMessage() {
+                    this.canShowMessage = false;
+                },
+                register() {
+                    const vue = this;
+                    const url = main.getApiUrl('register/product');
+
+                    main.getJSONRequest(url, 'POST', { body: vue.input })
+                        .then(function(json) {                            
+                            if (json.done) {
+                                vue.add();
+                            }
+
+                            vue.showMessage(json.message);
+                        });
+                },
+            },
+        };

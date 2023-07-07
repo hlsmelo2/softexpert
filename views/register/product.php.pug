@@ -1,0 +1,116 @@
+extends ../layout/layout.php
+
+block main
+    section#register-product
+        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
+        table
+            thead
+                tr
+                    th ID
+                    th Name
+                    th Description
+                    th Image
+                    th Price
+                    th  Quantity
+            tbody
+                tr(v-for="(product, index) of list" :key="index")
+                    td {{ product.id }}
+                    td {{ product.name }}
+                    td {{ product.description }}
+                    td {{ product.image }}
+                    td {{ product.price }}
+                    td {{ product.quantity }}
+                
+        h1 Product
+        form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+            div.line
+                label ID
+                span#id 0
+            div.line
+                label Nome
+                input(v-model="input.name" type="text" name="" class="form-control")
+            div.line
+                label Descrição
+                textarea(v-model="input.description" name="" class="form-control")
+            div.line    
+                label Foto
+                input(v-model="input.image" type="text" name="" class="form-control")
+            div.line 
+                label Preço
+                input(v-model="input.price" type="text" name="" class="form-control")
+            div.line 
+                label Quantidade
+                input(v-model="input.quantity" type="text" name="" class="form-control")
+            div.line
+                label Taxa
+                select(v-model="input.product_type_id" name="product_type_id" class="form-control")
+                    option(v-for="(productType, index) of productTypesList" :key="index" :value="productType.id") {{ productType.name }}
+            div.buttons
+                button(@click="register()" class="btn btn-primary") Register
+
+    script.
+        main.vue = {
+            el: 'section#register-product',
+            data() {
+                return {
+                    input: {
+                        name: 'Product name',
+                        description: 'Product description',
+                        image: '',
+                        price: '0,00',
+                        quantity: 10,
+                        product_type_id: 0,
+                    },
+                    list: [],
+                    productTypesList: [],
+                    canShowMessage: false,
+                    alertMessage: '',
+                };
+            },
+            methods: {
+                getList() {
+                    const vue = this;
+                    const url = main.getApiUrl('products');
+
+                    main.getJSONRequest(url, 'GET')
+                        .then(function(json) { vue.list = json; });
+                },
+                fillProductTypes() {
+                    const vue = this;
+                    const url = main.getApiUrl('product-types');
+
+                    main.getJSONRequest(url, 'GET')
+                        .then(function(json) {
+                            vue.productTypesList = json;
+                            vue.input.product_type_id = main.isFilledArray(json) ? json[0].id : 0;
+                        });
+                },
+                add() {
+                    this.list.push( Object.assign({}, this.input) );
+                },
+                showMessage(message) {
+                    this.canShowMessage = true;
+                    this.alertMessage = message;
+                },
+                hideMessage() {
+                    this.canShowMessage = false;
+                },
+                register() {
+                    const vue = this;
+                    const url = main.getApiUrl('product');
+
+                    main.getJSONRequest(url, 'POST', { body: vue.input })
+                        .then(function(json) {                            
+                            if (json.done) {
+                                vue.add();
+                            }
+
+                            vue.showMessage(json.message);
+                        });
+                },
+            },
+            mounted() {
+                this.getList();
+                this.fillProductTypes(); 
+            },
+        };

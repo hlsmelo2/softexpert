@@ -1,0 +1,93 @@
+script.
+    const main = {
+        getApiUrl(endpoint) {
+            return location.origin + '/api/' + endpoint;
+        },
+        killForm() {
+            return false;
+        },
+        isFilledArray(aArray) {
+            return (
+                aArray instanceof Array &&
+                'concat' in aArray &&
+                typeof(aArray) !== 'string' &&
+                aArray.length > 0
+            );
+        },
+        getRequestBody(bodyObject) {
+            const formData = new FormData();
+
+            Object.keys(bodyObject).forEach(function(key) {
+                formData.append( key, bodyObject[key] );
+            });
+
+            return formData;
+        },
+        sendRequest(url, method, options) {
+            const newOptions = { method };
+
+            if (options !== undefined && options.body !== undefined) {
+                newOptions.body = this.getRequestBody(options.body);
+            }
+            
+            if (options !== undefined && options.headers !== undefined) {
+                options.headers = new Headers(options.headers);
+            }
+
+            return fetch(url, newOptions);
+        },
+        getTextRequest(url, method, options) {
+            return this.sendRequest(url, method, options)
+                .then(function(response) { return response.text(); })
+                .then(function(text) { return text; });
+        },
+        getJSONRequest(url, method, options) {
+            return this.sendRequest(url, method, options)
+                .then(function(response) { return response.json(); })
+                .then(function(json) { return json; });
+        },
+    };
+    
+style.
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    h1, h2 { text-align: center; }
+    div.line { margin-bottom: 10px; }
+   
+    main { width: 80%; }
+    nav#main-menu { display: table; }
+
+    main,
+    nav#main-menu,
+    section#home,
+    section[id*="register"],
+    section[id*="register"] table,
+    section[id*="register"] form { margin: 0 auto; }
+
+    .wrapper-1,
+    .wrapper-2{
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    .wrapper-2{ width: 56%; }
+
+    section[id*="register"] h1 { text-align: center; }
+
+    section[id*="register"] table {
+        margin-bottom: 30px;
+        height: 200px;
+        overflow-y: auto;
+    }
+
+    section[id*="register"] table th,
+    section[id*="register"] table td { padding: 10px; }
+
+    ul#showcase li {
+        display: inline-block;
+        width: 30.3%;
+        margin: 20px 10px;
+    }

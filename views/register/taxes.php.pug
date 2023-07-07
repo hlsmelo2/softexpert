@@ -1,0 +1,81 @@
+extends ../layout/layout.php
+
+block main
+    section#register-tax
+        span(v-if="canShowMessage" @click, @mouseover="hideMessage()" class="alert alert-danger") {{ alertMessage }}
+        table
+            thead
+                tr
+                    th ID
+                    th Name
+                    th Value
+            tbody
+                tr(v-for="(tax, index) of list" :key="index")
+                    td {{ tax.id }}
+                    td {{ tax.name }}
+                    td {{ tax.value }}
+                
+        h1 Taxes
+        form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+            div.line
+                label ID
+                span 0
+            div.line
+                label Nome
+                input(v-model="input.name" type="text" name="name" class="form-control")
+            div.line
+                label Valor
+                input(v-model="input.value" type="text" name="value" class="form-control")
+            div.buttons
+                button(@click="register()" class="btn btn-primary") Register
+
+    script.
+        main.vue = {
+            el: 'section#register-tax',
+            data() {
+                return {
+                    input: {
+                        name: 'Tax name 1',
+                        value: '0,00',
+                    },
+                    list: [],
+                    canShowMessage: false,
+                    alertMessage: '',
+                };
+            },
+            methods: {
+                getList() {
+                    const vue = this;
+                    const url = main.getApiUrl('taxes');
+
+                    main.getJSONRequest(url, 'GET')
+                        .then(function(json) { vue.list = json; });
+                },
+                add() {
+                    this.list.push( Object.assign({}, this.input) );
+                },
+                showMessage(message) {
+                    this.canShowMessage = true;
+                    this.alertMessage = message;
+                },
+                hideMessage() {
+                    this.canShowMessage = false;
+                },
+                register() {
+                    const vue = this;
+                    const url = main.getApiUrl('tax');
+
+                    main.getJSONRequest(url, 'POST', { body: vue.input })
+                        .then(function(json) {                            
+                            if (json.done) {
+                                vue.add();
+                            }
+
+                            vue.showMessage(json.message);
+                        });
+                },
+            },
+            mounted() {
+                this.getList(); 
+            },
+        };
