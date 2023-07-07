@@ -8,33 +8,42 @@ use Work\Soft_Expert\Renderer;
 use Work\Soft_Expert\Router\Routes\Api as RoutesApi;
 use Work\Soft_Expert\Router\Routes\Web;
 
+use function PHPUnit\Framework\isNull;
+
 class Router {
-    static protected $current_route = null;
+    static protected string $current_route = '';
 
     static protected function get_current_route(): string {
-        if (self::$current_route !== null) {
+        if (self::$current_route !== '') {
             return self::$current_route;
         }
 
         preg_match_all('/[^?#]+/', $_SERVER['REQUEST_URI'], $matches);
-        self::$current_route = $matches[0][0];
+        
+        self::$current_route = (
+            (
+                $matches !== null &&
+                count($matches) > 0 &&
+                $matches[0][0] !== null
+            ) ? $matches[0][0] : ''
+        );
         
         return self::$current_route;
     }
 
-    static public function get_route_params(object $route): array {
+    static protected function get_route_params(object $route): array {
         preg_match_all($route->new_path, self::get_current_route(), $matches);
 
         return ($matches === null) ? [] : $matches[0];
     }
     
-    static public function get_file_extension(string $route_destination): string {
+    static protected function get_file_extension(string $route_destination): string {
         $split = explode('.', $route_destination);        
         
         return $split[ count($split) - 1 ];         
     }
     
-    static public function give_new_path(object $route): string {
+    static protected function give_new_path(object $route): string {
         $path = $route->path;
         $regex = '#^%s/?$#';
 
@@ -53,7 +62,7 @@ class Router {
         return $route->new_path;
     }
     
-    static public function is_route(object $route): bool {
+    static protected function is_route(object $route): bool {
         $new_path = self::give_new_path($route);
 
         if ($new_path === '/' && $new_path === self::get_current_route()) {
@@ -68,7 +77,7 @@ class Router {
         return $matches !== null && count($matches[0]) > 0;
     }
     
-    static public function is_method(object $route): bool {
+    static protected function is_method(object $route): bool {
         // VarDumper::dump($route);
 
         if ($route->method !== $_SERVER['REQUEST_METHOD']) {
@@ -78,7 +87,7 @@ class Router {
         return true;
     }
     
-    static public function handle_route(object $route, $is_api_route): void {
+    static protected function handle_route(object $route, $is_api_route): void {
         if ($is_api_route) {
             echo call_user_func( $route->destination, array_merge($_GET, $_POST, $_FILES) );
             
@@ -98,9 +107,8 @@ class Router {
         echo Renderer::get_rendered_file($filename, $params, true);
     }
     
-    static public function do($is_api_route = false): void {
+    static protected function do($is_api_route = false): bool {
         $routes = $is_api_route ? RoutesApi::routes : Web::routes;
-
         
         foreach ($routes as $route) {
             $route = (object) $route;
@@ -109,13 +117,16 @@ class Router {
             if (self::is_route($route) && self::is_method($route)) {
                 self::handle_route($route, $is_api_route);    
                 
-                break;
+                return true;
             }
         }
+
+        return false;
     }
     
-    static public function init(): void {
+    static public function init(): bool {
         $is_api_route = (strpos( self::get_current_route(), Api::PREFIX ) === 0) ? true : false;
-        self::do($is_api_route);
+        
+        return self::do($is_api_route);
     }
 }
