@@ -22,13 +22,13 @@ block main
                 span#id 0
             div.line
                 label Nome
-                input(v-model="input.name" type="text" name="name" class="form-control")
+                input(v-model="input.name" type="text" name="name" placeholder="Product type name" class="form-control")
             div.line
                 label Descrição
-                textarea(v-model="input.description" name="description" class="form-control")
+                textarea(v-model="input.description" name="description" placeholder="Product type description" class="form-control")
             div.line
                 label Taxa
-                select(v-model="input.tax_id" name="tax_id" class="form-control")
+                select(v-model="input.tax_id" name="tax_id" placeholder="Product type tax" class="form-control")
                     option(v-for="(tax, index) of taxesList" :key="index" :value="tax.id") {{ tax.name }}
             div.buttons
                 button(@click="register()" class="btn btn-primary") Register
@@ -39,8 +39,8 @@ block main
             data() {
                 return {
                     input: {
-                        name: 'Product type name',
-                        description: 'Product type description',
+                        name: '',
+                        description: '',
                         tax_id: 0,
                     },
                     list: [],

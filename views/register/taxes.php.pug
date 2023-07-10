@@ -22,10 +22,10 @@ block main
                 span 0
             div.line
                 label Nome
-                input(v-model="input.name" type="text" name="name" class="form-control")
+                input(v-model="input.name" type="text" name="name" placeholder="Tax name" class="form-control")
             div.line
                 label Valor
-                input(v-model="input.value" type="text" name="value" class="form-control")
+                input(v-model="input.value" type="text" name="value" placeholder="Tax value" class="form-control")
             div.buttons
                 button(@click="register()" class="btn btn-primary") Register
 
@@ -35,8 +35,8 @@ block main
             data() {
                 return {
                     input: {
-                        name: 'Tax name 1',
-                        value: '0,00',
+                        name: '',
+                        value: '',
                     },
                     list: [],
                     canShowMessage: false,

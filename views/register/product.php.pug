@@ -30,19 +30,19 @@ block main
                 span#id 0
             div.line
                 label Nome
-                input(v-model="input.name" type="text" name="name" class="form-control")
+                input(v-model="input.name" type="text" name="name" placeholder="Product name" class="form-control")
             div.line
                 label Descrição
-                textarea(v-model="input.description" name="description" class="form-control")
+                textarea(v-model="input.description" name="description" placeholder="Product description" class="form-control")
             div.line    
                 label Foto
-                input(ref="image" v-model="input.image" type="file" name="image" class="form-control")
+                input(ref="image" v-model="input.image" type="file" name="image" placeholder="Product image" class="form-control")
             div.line 
                 label Preço
-                input(v-model="input.price" type="text" name="price" class="form-control")
+                input(v-model="input.price" type="text" name="price" placeholder="Product price" class="form-control")
             div.line 
                 label Quantidade
-                input(v-model="input.quantity" type="text" name="quantity" class="form-control")
+                input(v-model="input.quantity" type="text" name="quantity" placeholder="Product quantity in stock" class="form-control")
             div.line
                 label Taxa
                 select(v-model="input.product_type_id" name="product_type_id" class="form-control")
@@ -57,11 +57,11 @@ block main
             data() {
                 return {
                     input: {
-                        name: 'Product name',
-                        description: 'Product description',
+                        name: '',
+                        description: '',
                         image: null,
                         price: '0,00',
-                        quantity: 10,
+                        quantity: 0,
                         product_type_id: 0,
                     },
                     list: [],
@@ -80,9 +80,9 @@ block main
                 },
                 fillProductTypes() {
                     const vue = this;
-                    const url =getApiUrl('product-types');
+                    const url = mainObject.getApiUrl('product-types');
 
-                   getJSONRequest(url, 'GET')
+                   mainObject.getJSONRequest(url, 'GET')
                         .then(function(json) {
                             vue.productTypesList = json;
                             vue.input.product_type_id =isFilledArray(json) ? json[0].id : 0;

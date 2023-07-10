@@ -7,10 +7,10 @@ block main
         form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
             div.line
                 label Username or email
-                input(v-model="input.login.username" type="text" name="username" class="form-control")
+                input(v-model="input.login.username" type="text" name="username" placeholder="Your username" class="form-control")
             div.line
                 label Password
-                input(v-model="input.login.password" type="password" name="password" class="form-control")
+                input(v-model="input.login.password" type="password" name="password"  placeholder="Your password" class="form-control")
             div.buttons
                 button(@click="login()" name="login" class="btn btn-primary") Sign in
                 a(@click="showHideCreationForm(true)" name="create" href="#") Create An User
@@ -19,19 +19,19 @@ block main
             form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
                 div.line
                     label Username
-                    input(v-model="input.register.username" type="text" name="username" class="form-control")
+                    input(v-model="input.register.username" type="text" name="username" placeholder="Username" class="form-control")
                 div.line
                     label Email
-                    input(v-model="input.register.email" type="text" name="email" class="form-control")
+                    input(v-model="input.register.email" type="text" name="email" placeholder="email" class="form-control")
                 div.line
                     label Display Name
-                    input(v-model="input.register.display_name" type="text" name="display_name" class="form-control")
+                    input(v-model="input.register.display_name" type="text" name="display_name" placeholder="What do you like to be called" class="form-control")
                 div.line
                     label Password
-                    input(v-model="input.register.password" type="password" name="password" class="form-control")
+                    input(v-model="input.register.password" type="password" name="password" placeholder="Password" class="form-control")
                 div.line
                     label Repeat password
-                    input(v-model="input.register.re_password" type="password" name="re_password" class="form-control")
+                    input(v-model="input.register.re_password" type="password" name="re_password"  placeholder="Password reapeat" class="form-control")
                 div.buttons
                     button(@click="showHideCreationForm(false)" class="btn btn-secondary" name="register") Cancel
                     button(@click="register()" class="btn btn-primary") Create
