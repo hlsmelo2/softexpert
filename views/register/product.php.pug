@@ -44,7 +44,7 @@ block main
                 label Quantidade
                 input(v-model="input.quantity" type="text" name="quantity" placeholder="Product quantity in stock" class="form-control")
             div.line
-                label Taxa
+                label Tipo de produto
                 select(v-model="input.product_type_id" name="product_type_id" class="form-control")
                     option(v-for="(productType, index) of productTypesList" :key="index" :value="productType.id") {{ productType.name }}
             div.buttons
@@ -103,13 +103,13 @@ block main
                 },
                 register() {
                     const vue = this;
-                    const url =getApiUrl('product');
+                    const url = mainObject.getApiUrl('product');
                     const files = vue.$refs.image.files;
 
                     vue.input.image_file = (files.length > 0) ? files[0] : null;
                     vue.input.image = (vue.input.image_file !== null) ? files[0].name : '';
 
-                   getJSONRequest(url, 'POST', { body: vue.input })
+                   mainObject.getJSONRequest(url, 'POST', { body: vue.input })
                         .then(function(json) {                            
                             if (json.done) {
                                 vue.add();

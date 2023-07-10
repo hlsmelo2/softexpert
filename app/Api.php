@@ -11,8 +11,8 @@ use Work\Soft_Expert\DB\Models\User;
 class Api {
     const PREFIX = '/api';
 
-    static protected function get_params(array $params = []): array | null {
-        return $params['params'];
+    static protected function get_params(array $params = []): array {
+        return isset($params['params']) ? $params['params'] : $params;
     }
     
     static protected function get_response(string $type, string $message = null, array $data = null) {

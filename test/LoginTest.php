@@ -1,9 +1,9 @@
 <?php
 
+
 namespace Test;
 
 use Phug\Util\TestCase;
-use Work\Soft_Expert\Api;
 use Work\Soft_Expert\DB\Models\User;
 
 class LoginTest extends TestCase {
@@ -28,13 +28,11 @@ class LoginTest extends TestCase {
         $this->init();
         $count = $this->users_count + 1;
 
-        $faker = Faker\Factory::create();
-
         User::create([
-            'username' => "soft_expert_$count",
-            'email' => $faker->email,
+            'username' => "soft_expert_{$count}",
+            'email' => "soft-expert{$count}@spft-expert.com",
             'password' => 'soft-expert',
-            'display_name' => $faker->name,
+            'display_name' => 'Soft Expert',
         ]);
 
         $this->assertGreaterThan($this->users_count, $this->test_to_get_users_list());

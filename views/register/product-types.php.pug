@@ -82,9 +82,9 @@ block main
                 },
                 register() {
                     const vue = this;
-                    const url =getApiUrl('product-type');
+                    const url = mainObject.getApiUrl('product-type');
 
-                   getJSONRequest(url, 'POST', { body: vue.input })
+                   mainObject.getJSONRequest(url, 'POST', { body: vue.input })
                         .then(function(json) {                            
                             if (json.done) {
                                 vue.add();
