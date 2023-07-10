@@ -32,7 +32,7 @@ section(id="$cart_page_type")
                     label Subtotal Taxes
                     span.subtotal-tax {{ item.subtotalTaxes }}
                 div.buttons
-                    a(@click="removeFromCart(item.product)" href="#") Remove
+                    a(@click="removeFromCart(item.product, true)" href="#") Remove
         div#totals(v-if="miniCart")
             h2 Totals
             div.line
@@ -152,24 +152,36 @@ script.
                 this.cart.push( { quantity: 1, product } );
                 this.saveCart(message);
             },
-            removeFromCart(product) {
+            removeAllFromCart(cart, cartItem) {
+                this.cart = [].concat(
+                    cart.slice( 0, cart.indexOf(cartItem) ),
+                    cart.slice( cart.indexOf(cartItem) + 1 ),
+                );
+            },
+            removeFromCart(product, all) {
                 const cart = this.cart;
                 const cartItem = this.getInCart(product.id);
+                
+                all = (all === undefined) ? false : true;
 
                 if (cartItem === undefined) {
                     return;
                 }
-                
+
+                if (all) {
+                    this.removeAllFromCart(cart, cartItem);
+                    
+                    return; 
+                }
+
                 cartItem.quantity -= 1;
 
                 if (cartItem.quantity === 0) {
-                    this.cart = [].concat(
-                        cart.slice( 0, cart.indexOf(cartItem) ),
-                        cart.slice( cart.indexOf(cartItem) + 1 ),
-                    );
+                    this.removeAllFromCart(cart, cartItem);
                 }
 
                 this.saveCart('The product was removed!');
+    
             },
             givePrecision(floatValue) {
                 return (floatValue).toFixed(2);
