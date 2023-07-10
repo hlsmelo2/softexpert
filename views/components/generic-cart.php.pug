@@ -226,7 +226,7 @@ script.
             },
             register() {
                 const vue = this;
-                const url =getApiUrl('sale');
+                const url = mainObject.getApiUrl('sale');
 
                 const body = {
                     cart: JSON.stringify(vue.cart),
@@ -234,7 +234,7 @@ script.
                     total_taxes: vue.totalTaxes,
                 };
 
-               getJSONRequest(url, 'POST', { body })
+               mainObject.getJSONRequest(url, 'POST', { body })
                     .then(function(json) {                            
                         vue.showMessage(json.message);
                     });
