@@ -1,7 +1,8 @@
 section(id="$cart_page_type")
-    include warning.php
-    h1 Buy
-    ul#list.wrapper-2
+    if $cart_page_type !== 'minicart'
+        include warning.php
+    h1 {{ title }}
+    ul#list.wrapper-2(:class="{ open: isOpen }")
         li(v-for="(item, index) of cart" :key="index" :class="{ 'card-style': !miniCart }")
             img(:src="item.product.image")
             div.data
@@ -60,6 +61,8 @@ script.
         el: getCartData().el,
         data() {
             return {
+                isOpen: false,
+                canHandleMove: false,
                 miniCart: true,
                 total: null,
                 totalTaxes: null,
@@ -69,6 +72,34 @@ script.
             };
         },
         methods: {
+            open() {
+                this.isOpen = true;
+                window.addEventListener('mouseover', this.moveHandler);
+            },
+            close() {
+                this.isOpen = false;
+            },
+            moveHandler(moveEvent) {
+                const inPath = moveEvent.composedPath().includes(this.$el.parentNode);
+
+                if (!this.canHandleMove && !inPath) {
+                    return;
+                }
+
+                if (!this.canHandleMove && inPath) {
+                    this.canHandleMove = true;
+                    
+                    return;
+                }
+
+                if (this.canHandleMove && inPath) {                    
+                    return;
+                }
+
+                this.close();
+                this.canHandleMove = false;
+                window.removeEventListener('mouseover', this.moveHandler);
+            },
             showMessage(message) {
                 this.canShowMessage = true;
                 this.alertMessage = message;
