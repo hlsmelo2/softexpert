@@ -1,0 +1,214 @@
+section(id="$cart_page_type")
+    include warning.php
+    h1 Buy
+    ul#list.wrapper-2
+        li(v-for="(item, index) of cart" :key="index" :class="{ 'card-style': !miniCart }")
+            img(:src="item.product.image")
+            div.data
+                div.line
+                    label ID
+                    span.id {{ item.product.id }}
+                div.line
+                    label Name
+                    span.name {{ item.product.name }}
+                div.line
+                    label Price
+                    span.price {{ item.product.price }}
+                div.line(v-if="!miniCart")
+                    label Type
+                    span.type_name {{ item.product.type_name }}
+                div.line(v-if="!miniCart")
+                    label Tax
+                    span.tax {{ killSymbol(item.product.tax) }}%
+                div.line
+                    label Quantity
+                    span.quantity(v-if="miniCart") {{ item.quantity }}
+                    input(v-if="!miniCart" v-model="item.quantity" type="number")
+                div.line(v-if="!miniCart")
+                    label Subtotal
+                    span.subtotal {{ item.subtotal }}
+                div.line(v-if="!miniCart")
+                    label Subtotal Taxes
+                    span.subtotal-tax {{ item.subtotalTaxes }}
+                div.buttons
+                    a(@click="removeFromCart(item.product)" href="#") Remove
+        div#totals(v-if="miniCart")
+            h2 Totals
+            div.line
+                label Total
+                span {{ getCurrency(total) }}
+            div.line
+                label Total Taxes
+                span {{ getCurrency(totalTaxes) }}
+            div.buttons
+                button(@click="goToChekout()" class="btn btn-primary") Go To Checkout
+    div#totals(v-if="!miniCart")
+        h2 Totals
+        div
+            div.line
+                label Total
+                span {{ getCurrency(total) }}
+            div.line
+                label Total Taxes
+                span {{ getCurrency(totalTaxes) }}
+            div.line
+                button(@click="register()" class="btn btn-primary") Buy
+style
+    include public/assets/styles/cart.css
+script.
+    mainObject.vue = {
+        el: getCartData().el,
+        data() {
+            return {
+                miniCart: true,
+                total: null,
+                totalTaxes: null,
+                cart: [],
+                canShowMessage: false,
+                alertMessage: '',
+            };
+        },
+        methods: {
+            showMessage(message) {
+                this.canShowMessage = true;
+                this.alertMessage = message;
+            },
+            hideMessage() {
+                this.canShowMessage = false;
+            },
+            updateCart() {
+                const vue = this;
+                
+                const data = {
+                    total: 0,
+                    totalTaxes: 0,
+                };
+
+                vue.cart.forEach(function(item) {
+                    const subtotal = vue.getSubTotal(item);
+                    const subtotalTaxes = vue.getSubTotalTaxes(item);
+
+                    data.total += parseFloat(subtotal);
+                    data.totalTaxes += parseFloat(subtotalTaxes);
+
+                    item.subtotal = vue.getCurrency(subtotal);
+                    item.subtotalTaxes = vue.getFloat(vue.getCurrency(subtotalTaxes));
+                });
+
+                vue.total = vue.givePrecision(data.total);
+                vue.totalTaxes = vue.givePrecision(data.totalTaxes);
+            },
+            saveCart(message) {
+                localStorage.setItem( 'cart', JSON.stringify(this.cart) );
+                this.showMessage(message);
+            },
+            getInCart(productId) {
+                return this.cart.find(function(cartItem) {
+                    return cartItem.product.id === productId;
+                });
+            },
+            addToCart(product) {
+                const message = 'The product was added!';
+                const cartItem = this.getInCart(product.id);
+
+                if (cartItem !== undefined) {
+                    cartItem.quantity += 1;
+                    this.saveCart(message);
+
+                    return;
+                }
+
+                this.cart.push( { quantity: 1, product } );
+                this.saveCart(message);
+            },
+            removeFromCart(product) {
+                const cart = this.cart;
+                const cartItem = this.getInCart(product.id);
+
+                if (cartItem === undefined) {
+                    return;
+                }
+                
+                cartItem.quantity -= 1;
+
+                if (cartItem.quantity === 0) {
+                    this.cart = [].concat(
+                        cart.slice( 0, cart.indexOf(cartItem) ),
+                        cart.slice( cart.indexOf(cartItem) + 1 ),
+                    );
+                }
+
+                this.saveCart('The product was removed!');
+            },
+            givePrecision(floatValue) {
+                return (floatValue).toFixed(2);
+            },
+            getFloat(currencyValue) {
+                const data = {};
+
+                data.value = currencyValue.replace(/[^,.0-9]/g, '');
+                data.reverse = data.value.split('').reverse().join('');
+                data.match = data.reverse.match(/[^,.]+/g);
+                data.match[0] += (data.match.length > 1) ? '.' : '';
+                data.floatValue = data.match.join('').split('').reverse().join('');
+
+                return this.givePrecision( parseFloat(data.floatValue) );
+            },
+            killSymbol(currencyValue) {
+                return currencyValue.replace('R$', '');
+            },
+            getCurrency(floatValue) {
+                const data = {};
+
+                data.reverse = String(floatValue).split('').reverse().join('');
+                data.split = data.reverse.split('.');
+                data.cents = (data.split.length > 1) ? data.split[0] : '00';
+                data.cents = data.cents.replace(/^(\d)$/, '0$1');
+                data.value = (data.split.length > 1) ? data.split[1] : data.split[0];
+                data.thousands = data.value.replace(/([0-9]{3})/g, '$1.');
+                data.currency = [data.cents, data.thousands].join(',').replace(/\.+$/, '');
+                
+                return 'R$ ' + data.currency.split('').reverse().join('');
+            },
+            getSubTotal(item) {
+                return this.getFloat(item.product.price) * item.quantity;
+            },
+            getSubTotalTaxes(item) {
+                const subtotalTaxes = this.getSubTotal(item) * (this.getFloat(item.product.tax) / 100);
+
+                return this.givePrecision(subtotalTaxes);
+            },
+            goToChekout() {
+                location.href = '/buy';
+            },
+            register() {
+                const vue = this;
+                const url =getApiUrl('sale');
+
+                const body = {
+                    cart: JSON.stringify(vue.cart),
+                    total: vue.total,
+                    total_taxes: vue.totalTaxes,
+                };
+
+               getJSONRequest(url, 'POST', { body })
+                    .then(function(json) {                            
+                        vue.showMessage(json.message);
+                    });
+            },
+        },
+        updated() {
+            this.updateCart();
+        },
+        mounted() {
+            const cart = localStorage.getItem('cart');
+            
+            this.miniCart = this.$el.parentNode.id === 'minicart';
+            this.cart = (cart === null) ? [] : JSON.parse(cart);
+            this.updateCart();
+        },
+    };
+
+    if (location.pathname !== '/buy') {
+        mainObject.vueCart = mainObject.vue;
+    }

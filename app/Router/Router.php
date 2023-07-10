@@ -9,8 +9,6 @@ use Work\Soft_Expert\Renderer;
 use Work\Soft_Expert\Router\Routes\Api as RoutesApi;
 use Work\Soft_Expert\Router\Routes\Web;
 
-use function PHPUnit\Framework\isNull;
-
 class Router {
     static protected string $current_route = '';
 
@@ -34,8 +32,10 @@ class Router {
 
     static protected function get_route_params(object $route): array {
         preg_match_all($route->new_path, self::get_current_route(), $matches);
-
-        return ($matches === null) ? [] : $matches[0];
+        $params = ($matches === null) ? [] : $matches;
+        $params2 = !isset($route->parameters) ? [] : $route->parameters;
+        
+        return ['params' => array_merge($params, $params2, $_GET, $_POST, $_FILES) ];
     }
     
     static protected function get_file_extension(string $route_destination): string {
@@ -48,7 +48,7 @@ class Router {
         $path = $route->path;
         $regex = '#^%s/?$#';
 
-        preg_match_all('/\{[^\}]+\}+/', $path, $matches);
+        preg_match_all('/\{([^\}]+)\}/', $path, $matches);
 
         if ( count($matches[0]) === 0 ) {
             $route->new_path = $path;
@@ -70,17 +70,12 @@ class Router {
             return true;
         }
 
-        // VarDumper::dump([$new_path, self::get_current_route(), $route]);
         preg_match_all($new_path, self::get_current_route(), $matches);
-
-        // VarDumper::dump([$route, self::get_current_route(), $matches]);
     
         return $matches !== null && count($matches[0]) > 0;
     }
     
     static protected function is_method(object $route): bool {
-        // VarDumper::dump($route);
-
         if ($route->method !== $_SERVER['REQUEST_METHOD']) {
             return false;
             // die('This route dont accept the used method in request');
@@ -91,7 +86,7 @@ class Router {
     
     static protected function handle_route(object $route, $is_api_route): void {
         if ($is_api_route) {
-            echo call_user_func( $route->destination, array_merge($_GET, $_POST, $_FILES) );
+            echo call_user_func( $route->destination, self::get_route_params($route) );
             
             return;
         }
@@ -101,12 +96,12 @@ class Router {
         $params = self::get_route_params($route);
         
         if (self::get_file_extension($route->destination) === 'pug') {
-            echo Renderer::get_rendered_file($filename, $params);
+            echo Renderer::get_rendered_file($filename, $params['params']);
             
             return;
         }
         
-        echo Renderer::get_rendered_file($filename, $params, true);
+        echo Renderer::get_rendered_file($filename, $params['params'], true);
     }
     
     static protected function do($is_api_route = false): bool {
@@ -114,7 +109,6 @@ class Router {
         
         foreach ($routes as $route) {
             $route = (object) $route;
-            // var_dump($route);
 
             if (self::is_route($route) && self::is_method($route) && AuthGuard::authorized($route, $is_api_route)) {
                 self::handle_route($route, $is_api_route);    
@@ -122,6 +116,8 @@ class Router {
                 return true;
             }
         }
+
+        // header('location: /404');
 
         return false;
     }

@@ -1,0 +1,81 @@
+extends layout/layout.php
+
+block main
+    - $product_id = $product_id[0]
+    section#product(class="product-$product_id")
+        include components/warning.php
+        h1 {{ product.name }}
+        div#product.wrapper-2
+            img(:src="product.image")
+            div.data
+                div.line
+                    label ID
+                    span.id {{ product.id }}
+                div.line
+                    label Price
+                    span.price {{ product.price }}
+                div.line
+                    label Type
+                    span.type_name {{ product.type_name }}
+                div.line
+                    label Tax
+                    span.tax {{ killSymbol(product.tax) }}%
+                div.line
+                    label Quantity
+                    input(v-model="input.quantity" type="number")
+            button(@click="addToCart()" class="btn btn-primary") Add To Cart
+    style.
+        section#product img,
+        section#product button { display: block; }
+        
+        section#product img {
+            width: 40%;
+            margin: 0 auto;
+        }
+        
+        section#product div.data {
+            width: 30%;
+            margin: 30px auto 40px;
+        }
+        
+        section#product label { width: 130px; }
+        section#product input { width: calc(100% - 130px); }
+        section#product button { margin: 0 auto 40px; }
+    script.
+       mainObject.vue = {
+            el: 'section#product',
+            data() {
+                return {
+                    input: {
+                        quantity: 1,
+                    },
+                    canShowMessage: false,
+                    alertMessage: '',
+                    product: {},
+                };
+            },
+            methods: {
+                showMessage(message) {
+                    this.canShowMessage = true;
+                    this.alertMessage = message;
+                },
+                hideMessage() {
+                    this.canShowMessage = false;
+                },
+                killSymbol(value) {
+                    return value;
+                },
+                getProduct(id) {
+                    const vue = this;
+                    const url = mainObject.getApiUrl('product/' + id);
+
+                   mainObject.getJSONRequest(url, 'GET')
+                        .then(function(json) { vue.product = json.product[0]; });
+                },
+            },
+            mounted() {
+                const productId = this.$el.parentNode.className.split('-')[1];
+                
+                this.getProduct(productId);
+            },
+        };

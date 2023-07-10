@@ -20,6 +20,12 @@ class Api {
             Constants::PROTECTED => Constants::DEFAULT,
         ],
         [
+            Constants::PATH => '/api/product/{product_id}',
+            Constants::DESTINATION => ApiHandler::class . '::get_product',
+            Constants::METHOD => Constants::GET,
+            Constants::PROTECTED => Constants::DEFAULT,
+        ],
+        [
             Constants::PATH => '/api/product-types',
             Constants::DESTINATION => ApiHandler::class . '::get_product_types',
             Constants::METHOD => Constants::GET,
@@ -58,6 +64,6 @@ class Api {
             Constants::PATH => '/api/login',
             Constants::DESTINATION => ApiHandler::class . '::login',
             Constants::METHOD => Constants::POST,
-        ],        
+        ],
     ];
 }

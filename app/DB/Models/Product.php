@@ -7,22 +7,38 @@ use Work\Soft_Expert\DB\DB;
 class Product {
     const TABLE_NAME = 'products';
     const DEFAULT_IMAGE = '';
+    const IMAGES_PATH = '/public/assets/images/';
+    const PRODUCT_IMAGE_SAMPLE = 'product-image-sample.png';
 
-    static public function read($params): array {
-        $query = 'SELECT * FROM se_products';
+    static protected function get_full_query(array $where = []): string {
+        $where_tail = [];
 
-        if ( ! isset($params['full']) ) {
-            return DB::read($query);
+        foreach ($where as $key => $value) {
+            array_push( $where_tail, sprintf(' AND %s = %s', $key, $value) );
         }
-        
-        $full_query = (
+
+        return (
             'SELECT p.id, p.name, p.description, p.image, p.quantity, p.price,
             t.name type_name, x.name tax_name, x.value tax
             FROM se_products p, se_product_types t, se_taxes x
-            WHERE t.tax_id = x.id AND p.product_type_id = t.id'
+            WHERE t.tax_id = x.id AND p.product_type_id = t.id' . implode('', $where_tail)
         );
+    }
+
+    static public function get($params): array {
+        $id = $params['product_id'][0];
+
+        return DB::execute( self::get_full_query( [ 'p.id' => $id ] ) );
+    }
+    
+    static public function read($params): array {
+        $query = 'SELECT * FROM se_products';
+
+        if ( ! isset($params['full']) || $params['full'] === 0 ) {
+            return DB::read($query);
+        }
         
-        return DB::read($full_query);
+        return DB::read(self::get_full_query());
     }
     
     static protected function get_image_paths(): object | string {
@@ -31,7 +47,7 @@ class Product {
         }
 
         $image = $_FILES['image_file'];
-        $file_url = '/public/assets/images/' . $image['name'];
+        $file_url = self::IMAGES_PATH . $image['name'];
         $filename = __DIR__ . '/../../..' . $file_url;
         
         return (object) [
@@ -43,7 +59,7 @@ class Product {
 
     static public function create(array $data) {
         $paths = self::get_image_paths();
-        $data['image'] = ($paths === '') ? '' : $paths->url;
+        $data['image'] = ($paths === '') ? self::IMAGES_PATH . self::PRODUCT_IMAGE_SAMPLE : $paths->url;
         unset($data['image_file']);
 
         if ($paths === '') {
@@ -57,7 +73,7 @@ class Product {
     }
     
     static public function update(array $data) {
-        DB::create(self::TABLE_NAME, $data);
+        DB::update(self::TABLE_NAME, $data);
     }
     
     static public function delete(array $data) {

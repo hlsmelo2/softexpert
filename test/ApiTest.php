@@ -36,17 +36,7 @@ class ApiTest extends TestCase {
 
         return count($products);
     }
-    
-    public function test_to_get_full_product_list_and_check_tax_property_exists(): void {
-        $products = $this->json_parse( Api::get_products(['full' => 0]) );
-        $this->assertArrayHasKey('tax', $products[0]);
-    }
-
-    public function test_to_get_product_list_and_check_tax_property_dont_exists(): void {
-        $products = $this->json_parse( Api::get_products([]) );
-        $this->assertArrayNotHasKey('tax', $products[0]);
-    }
-    
+        
     public function test_to_get_product_types_list(): int {
         $product_types = $this->json_parse( Api::get_product_types() );
         $this->assertIsArray($product_types);
@@ -63,7 +53,7 @@ class ApiTest extends TestCase {
     
     public function test_to_insert_products(): void {
         $this->init();
-        $count = $this->products_count;
+        $count = $this->products_count + 1;
 
         $product = [
             'name' => "Product {$count}",
@@ -71,7 +61,7 @@ class ApiTest extends TestCase {
             'image' => '',
             'image_file' => null,
             'quantity' => '10',
-            'product_type_id' => '2',
+            'product_type_id' => $count,
             'price' => $this->get_money_increment(10, $count),
 
         ];
@@ -82,12 +72,12 @@ class ApiTest extends TestCase {
     
     public function test_to_insert_product_types(): void {
         $this->init();
-        $count = $this->product_types_count;
+        $count = $this->product_types_count + 1;
 
         $product_type = [
             'name' => "Product type {$count}",
             'description' => "Product type {$count} description",
-            'tax_id' => "2",
+            'tax_id' => $count,
         ];
 
         Api::register_product_type($product_type);
@@ -96,7 +86,7 @@ class ApiTest extends TestCase {
 
     public function test_to_insert_taxes(): void {
         $this->init();
-        $count = $this->taxes_count;
+        $count = $this->taxes_count + 1;
 
         $tax = [
             'name' => "Tax {$count}",
@@ -105,5 +95,17 @@ class ApiTest extends TestCase {
 
         Api::register_tax($tax);
         $this->assertGreaterThan($this->taxes_count, $this->test_to_get_taxes_list());
+    }
+
+    public function test_to_get_full_product_list_and_check_tax_property_exists(): void {
+        $products = $this->json_parse( Api::get_products(['full' => 1]) );
+        $products = ( count($products) > 0 ) ? $products[0] : [[]];
+
+        $this->assertArrayHasKey('tax', $products);
+    }
+
+    public function test_to_get_product_list_and_check_tax_property_dont_exists(): void {
+        $products = $this->json_parse( Api::get_products([]) );
+        $this->assertArrayNotHasKey('tax', $products[0]);
     }
 }

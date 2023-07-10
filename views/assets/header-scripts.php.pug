@@ -1,5 +1,5 @@
 script.
-    const main = {
+    const mainObject = {
         getApiUrl(endpoint) {
             return location.origin + '/api/' + endpoint;
         },
@@ -25,27 +25,26 @@ script.
         },
         sendRequest(url, method, options) {
             const newOptions = { method };
+            options = (options === undefined) ? {} : options;
 
-            if (options !== undefined && options.body !== undefined) {
+            if (options.body !== undefined) {
                 newOptions.body = this.getRequestBody(options.body);
                 delete(options.body);
             }
 
-            //- if (sessionStorage.getItem('session') !== null) {
-            //-     options.headers = Object.assign(
-            //-         {},
-            //-         options.headers,
-            //-         { 'Authorization' : 'Bearer ' + sessionStorage.getItem('session') }, 
-            //-     );
-            //- }
+            if (sessionStorage.getItem('session') !== null) {
+                options.headers = Object.assign(
+                    {},
+                    options.headers,
+                    { 'Authorization' : 'Bearer ' + sessionStorage.getItem('session') }, 
+                );
+            }
 
-            if (options !== undefined && options.headers !== undefined) {
+            if (options.headers !== undefined) {
                 options.headers = new Headers(options.headers);
             }
 
-            //- if (options !== undefined) {
-            //-     Object.assign(newOptions, options);
-            //- }
+            Object.assign(newOptions, options);
 
             return fetch(url, newOptions);
         },
@@ -69,7 +68,15 @@ style.
 
     h1, h2 { text-align: center; }
     div.line { margin-bottom: 10px; }
-   
+
+    h1#logo {        
+        background: url("/public/assets/images/soft-expert.gif") no-repeat 0 0 /100% 100%;
+        height: 76px;
+        width: 340px;
+        font-size: 0;
+        margin: 26px auto 30px;
+    }
+        
     main { width: 80%; }
     nav#main-menu { display: table; }
     

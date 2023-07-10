@@ -1,0 +1,29 @@
+- $cart_page_type = 'minicart'
+script.
+        window.getCartData = function() {
+            return {
+                el: 'section#minicart',
+            };
+        }
+style.
+    div#minicart {
+        height: 40px;
+        width: 40px;
+        float: right;
+        position: relative;
+        background: url("/public/assets/images/cart.png") no-repeat 0 0 / 100% 100%;
+    }
+
+    section#minicart {
+        width: 300px;
+        position: absolute;
+        right: 0;
+        max-height: 400px;
+        display: none;
+        right: -132px;
+        margin-top: 30px;
+        padding-top: 15px;
+    }
+
+    div#minicart:hover section#minicart { display: block; }
+include generic-cart.php

@@ -1,0 +1,12 @@
+ul#showcase { text-align: center; }
+
+ul#showcase li {
+    display: inline-block;
+    width: 30.3%;
+}
+
+ul#showcase img { width: 80%; }
+
+se-price,
+se-product-type,
+se-product-id { display: block; }

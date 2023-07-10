@@ -1,0 +1,12 @@
+extends ../layout/layout.php
+
+block main
+    - $cart_page_type = 'cart'
+    script.
+        window.getCartData = function() {
+            return {
+                el: 'section#cart',
+            };
+        }
+    include generic-cart.php
+    

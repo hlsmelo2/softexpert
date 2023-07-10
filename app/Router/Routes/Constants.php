@@ -5,6 +5,7 @@ namespace Work\Soft_Expert\Router\Routes;
 class Constants {    
     const DEFAULT = 'default';
     const PROTECTED = 'protected';
+    const PARAMETERS = 'parameters';
     const PATH = 'path';
     const DESTINATION = 'destination';
     const METHOD = 'method';

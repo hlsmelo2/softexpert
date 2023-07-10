@@ -11,6 +11,10 @@ use Work\Soft_Expert\DB\Models\User;
 class Api {
     const PREFIX = '/api';
 
+    static protected function get_params(array $params = []): array {
+        return $params['params'];
+    }
+    
     static protected function get_response(string $type, string $message = null, array $data = null) {
         $data = ($data === null) ? [] : $data;
         $data['message'] = isset( $data['message'] ) ? $data['message'] : $message;
@@ -19,11 +23,26 @@ class Api {
         return json_encode($data);
     }
     
-    static public function get_products($params) {
-        return json_encode( Product::read($params) );
+    static protected function get_json_safe_list(array $list = []): string {
+        $empty = $list === null || count($list) === 0;
+        $safe_list = $empty ? [] : $list;
+
+        return json_encode($safe_list);
+    }
+    
+    static public function get_product($params): string {
+        return self::get_response('success', '', [
+            'product' => Product::get(self::get_params($params)),
+        ]);
+    }
+
+    static public function get_products($params): string {
+        return self::get_json_safe_list( Product::read( self::get_params($params) ) );        
     }
     
     static public function register_user($params) {
+        $params = self::get_params($params);
+
         if ( ! User::create($params) ) {
             return self::get_response('error', 'An error occurred while trying to register the user');
         };
@@ -35,7 +54,7 @@ class Api {
     }
 
     static public function login($params) {
-        $token = AuthGuard::get_login_token((object) $params);
+        $token = AuthGuard::get_login_token( (object) self::get_params($params) );
 
         if ($token === null) {
             return self::get_response('error', 'Login or password is wrong');
@@ -46,7 +65,13 @@ class Api {
         ]);
     }
     
+    static public function logout($params) {
+        // kill tokns
+    }
+    
     static public function register_sale($params) {
+        $params = self::get_params($params);
+
         if ( ! Sale::create($params) ) {
             return self::get_response('error', 'An error occurred while trying to register the sale');
         };
@@ -58,6 +83,8 @@ class Api {
     }
     
     static public function register_product($params) {
+        $params = self::get_params($params);
+
         if ( ! Product::create($params) ) {
             return self::get_response('error', 'An error occurred while trying to register the product');
         };
@@ -69,10 +96,12 @@ class Api {
     }
 
     static public function get_product_types() {
-        return json_encode( Product_Type::read() );
+        return self::get_json_safe_list( Product_Type::read() );
     }
     
     static public function register_product_type($params) {
+        $params = self::get_params($params);
+
         if ( ! Product_Type::create($params) ) {
             return self::get_response('error', 'An error occurred while trying to register the product type');
         };
@@ -84,10 +113,12 @@ class Api {
     }
 
     static public function get_taxes() {
-        return json_encode( Tax::read() );
+        return self::get_json_safe_list( Tax::read() );
     }
 
     static public function register_tax($params) {
+        $params = self::get_params($params);
+        
         if ( ! Tax::create($params) ) {
             return self::get_response('error', 'An error occurred while trying to register the tax');
         };

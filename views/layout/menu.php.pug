@@ -13,28 +13,5 @@ nav#main-menu
                     a(href="/register/taxes") Taxes
         li
             a(href="/buy") Buy
-style.
-
-    nav#main-menu {
-        position: relative;
-        z-index: 1;
-    }
-
-    nav#main-menu ul { list-style-type: none; }
-    nav#main-menu li { display: inline-block; }
-    
-    nav#main-menu li a {
-        display: inline-block;
-        padding: 10px 30px;
-        text-decoration: none;
-    }
-    
-    nav#main-menu li ul {
-        position: absolute;
-        display: none;
-        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-        background-color: #FFFFFF;
-    }
-
-    nav#main-menu li:hover ul,
-    nav#main-menu li ul li { display: block; }    
+style
+    include public/assets/styles/menu.css

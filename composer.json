@@ -13,7 +13,10 @@
             "name": "Henrique Melo",
             "email": "hlsmelosantander@gmail.com"
         }
-    ],
+    ],    
+    "scripts": {
+        "back-test": "vendor/bin/phpunit test --colors"
+    },
     "require": {
         "phug/phug": "^1.11",
         "symfony/var-dumper": "^6.3",

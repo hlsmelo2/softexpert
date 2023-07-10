@@ -1,0 +1,49 @@
+ul#list img {
+    width: 30%;
+    margin: 0 auto;
+    display: block;
+}
+
+section#cart label {
+    display: inline-block;
+    width: 128px;
+}
+
+
+ul#list,
+ul#list ul { list-style-type: none; }
+
+
+section#cart:not(.mini-view) img,
+section#cart:not(.mini-view) div.data {
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+}
+
+section#cart:not(.mini-view) img {
+    margin-right: 34px;
+    width: 33%;
+}
+
+section#cart:not(.mini-view) ul#list li { margin-bottom: 60px; }
+
+div#totals h2,
+div#totals div.line { margin-bottom: 15px; }
+
+div#totals h2 + div {
+    margin: 0 auto;
+    display: table;
+}
+
+
+section#cart.mini-view ul#list {
+    width: 340px;
+    padding: 0;
+}
+
+section#cart.mini-view ul#list li {
+    margin: 0;
+    border-bottom: 1px solid #000;
+    padding: 8px 0 12px 0;
+}

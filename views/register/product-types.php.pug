@@ -34,7 +34,7 @@ block main
                 button(@click="register()" class="btn btn-primary") Register
 
     script.
-        main.vue = {
+       mainObject.vue = {
             el: 'section#register-product-type',
             data() {
                 return {
@@ -52,19 +52,19 @@ block main
             methods: {
                 getList() {
                     const vue = this;
-                    const url = main.getApiUrl('product-types');
+                    const url = mainObject.getApiUrl('product-types');
 
-                    main.getJSONRequest(url, 'GET')
+                   mainObject.getJSONRequest(url, 'GET')
                         .then(function(json) { vue.list = json; });
                 },
                 fillTaxes() {
                     const vue = this;
-                    const url = main.getApiUrl('taxes');
+                    const url = mainObject.getApiUrl('taxes');
 
-                    main.getJSONRequest(url, 'GET')
+                   mainObject.getJSONRequest(url, 'GET')
                         .then(function(json) {
                             vue.taxesList = json;
-                            vue.input.tax_id = main.isFilledArray(json) ? json[0].id : 0;
+                            vue.input.tax_id =isFilledArray(json) ? json[0].id : 0;
                         });
                 },
                 add() {
@@ -79,9 +79,9 @@ block main
                 },
                 register() {
                     const vue = this;
-                    const url = main.getApiUrl('product-type');
+                    const url =getApiUrl('product-type');
 
-                    main.getJSONRequest(url, 'POST', { body: vue.input })
+                   getJSONRequest(url, 'POST', { body: vue.input })
                         .then(function(json) {                            
                             if (json.done) {
                                 vue.add();

@@ -11,8 +11,9 @@ script(type="module").
     import { createApp } from 'vue';
 
     window.addEventListener('load', function() {
-        if (main.vue !== null) {
-            main.vueGlobal = createApp(main.vue).mount(main.vue.el);
+        if (mainObject.vue !== null) {
+            mainObject.vueGlobal = createApp(mainObject.vue).mount(mainObject.vue.el);
+            mainObject.vueMiniCart = (mainObject.vueCart === undefined) ? null : createApp(mainObject.vueCart).mount(mainObject.vueCart.el);
         }
     });
 

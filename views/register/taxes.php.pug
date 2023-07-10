@@ -16,7 +16,7 @@ block main
                         td {{ tax.name }}
                         td {{ tax.value }}
         h1 Taxes
-        form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+        form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
             div.line
                 label ID
                 span 0
@@ -30,7 +30,7 @@ block main
                 button(@click="register()" class="btn btn-primary") Register
 
     script.
-        main.vue = {
+        mainObject.vue = {
             el: 'section#register-tax',
             data() {
                 return {
@@ -46,9 +46,9 @@ block main
             methods: {
                 getList() {
                     const vue = this;
-                    const url = main.getApiUrl('taxes');
+                    const url = mainObject.getApiUrl('taxes');
 
-                    main.getJSONRequest(url, 'GET')
+                    mainObject.getJSONRequest(url, 'GET')
                         .then(function(json) { vue.list = json; });
                 },
                 add() {
@@ -63,9 +63,9 @@ block main
                 },
                 register() {
                     const vue = this;
-                    const url = main.getApiUrl('tax');
+                    const url = mainObject.getApiUrl('tax');
 
-                    main.getJSONRequest(url, 'POST', { body: vue.input })
+                    mainObject.getJSONRequest(url, 'POST', { body: vue.input })
                         .then(function(json) {                            
                             if (json.done) {
                                 vue.add();

@@ -52,7 +52,7 @@ block main
     style.
         section#register-product table img { width: 80px; }              
     script.
-        main.vue = {
+       mainObject.vue = {
             el: 'section#register-product',
             data() {
                 return {
@@ -73,19 +73,19 @@ block main
             methods: {
                 getList() {
                     const vue = this;
-                    const url = main.getApiUrl('products');
+                    const url = mainObject.getApiUrl('products');
 
-                    main.getJSONRequest(url, 'GET')
+                   mainObject.getJSONRequest(url, 'GET')
                         .then(function(json) { vue.list = json; });
                 },
                 fillProductTypes() {
                     const vue = this;
-                    const url = main.getApiUrl('product-types');
+                    const url =getApiUrl('product-types');
 
-                    main.getJSONRequest(url, 'GET')
+                   getJSONRequest(url, 'GET')
                         .then(function(json) {
                             vue.productTypesList = json;
-                            vue.input.product_type_id = main.isFilledArray(json) ? json[0].id : 0;
+                            vue.input.product_type_id =isFilledArray(json) ? json[0].id : 0;
                         });
                 },
                 add() {
@@ -100,13 +100,13 @@ block main
                 },
                 register() {
                     const vue = this;
-                    const url = main.getApiUrl('product');
+                    const url =getApiUrl('product');
                     const files = vue.$refs.image.files;
 
                     vue.input.image_file = (files.length > 0) ? files[0] : null;
                     vue.input.image = (vue.input.image_file !== null) ? files[0].name : '';
 
-                    main.getJSONRequest(url, 'POST', { body: vue.input })
+                   getJSONRequest(url, 'POST', { body: vue.input })
                         .then(function(json) {                            
                             if (json.done) {
                                 vue.add();

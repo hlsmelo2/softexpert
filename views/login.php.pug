@@ -4,7 +4,7 @@ block main
     section#login
         include components/warning.php
         h1 Login
-        form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+        form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
             div.line
                 label Username or email
                 input(v-model="input.login.username" type="text" name="username" class="form-control")
@@ -12,11 +12,11 @@ block main
                 label Password
                 input(v-model="input.login.password" type="password" name="password" class="form-control")
             div.buttons
-                button(@click="login()" class="btn btn-primary") Sign in
-                a(@click="showHideCreationForm(true)" href="#") Create An User
+                button(@click="login()" name="login" class="btn btn-primary") Sign in
+                a(@click="showHideCreationForm(true)" name="create" href="#") Create An User
         div#creation(v-show="canShowCreationForm")
             h1 Create new user
-            form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+            form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
                 div.line
                     label Username
                     input(v-model="input.register.username" type="text" name="username" class="form-control")
@@ -33,36 +33,26 @@ block main
                     label Repeat password
                     input(v-model="input.register.re_password" type="password" name="re_password" class="form-control")
                 div.buttons
-                    button(@click="showHideCreationForm(false)" class="btn btn-secondary") Cancel
+                    button(@click="showHideCreationForm(false)" class="btn btn-secondary" name="register") Cancel
                     button(@click="register()" class="btn btn-primary") Create
-    style.
-        div#creation {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #FFFFFF;
-            height: 100%;
-            z-index: 1;
-        }
-
-        div#creation h1 { margin-top: 100px; }
+    style
+        include public/assets/styles/login.css
     script.
-        main.vue = {
+        mainObject.vue = {
             el: 'section#login',
             data() {
                 return {
                     input: {
                         login: {
-                            username: 'Username',
-                            password: 'password',
+                            username: '',
+                            password: '',
                         },
                         register: {
-                            username: 'Username',
-                            email: 'Email',
-                            display_name: 'Display Name',
-                            password: 'password',
-                            re_password: 'password',
+                            username: '',
+                            email: '',
+                            display_name: '',
+                            password: '',
+                            re_password: '',
                         }
                     },
                     canShowMessage: false,
@@ -83,23 +73,23 @@ block main
                 },
                 login() {
                     const vue = this;
-                    const url = main.getApiUrl('login');
+                    const url = mainObject.getApiUrl('login');
 
-                    main.getJSONRequest(url, 'POST', { body: vue.input.login })
+                    mainObject.getJSONRequest(url, 'POST', { body: vue.input.login })
                         .then(function(json) {                            
                             if (!json.done) {
                                 vue.showMessage(json.message);
                                 
                                 return;
                             }
-
+                            
                             sessionStorage.setItem('session', json.token);
                             location.href = '/';
                         });
                 },
                 register() {
                     const vue = this;
-                    const url = main.getApiUrl('user');
+                    const url = mainObject.getApiUrl('user');
 
                     if (vue.input.register.password !== vue.input.register.re_password) {
                         vue.showMessage('The password must be the same!');
@@ -107,7 +97,7 @@ block main
                         return;
                     }
 
-                    main.getJSONRequest(url, 'POST', { body: vue.input.register })
+                    mainObject.getJSONRequest(url, 'POST', { body: vue.input.register })
                         .then(function(json) {                            
                             vue.showMessage(json.message);
                         });
