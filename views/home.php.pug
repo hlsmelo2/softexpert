@@ -59,6 +59,9 @@ block main
                 getBuyUrl(productId) {
                     return '/product/' + productId; 
                 },
+                addToCart(product) {
+                    mainObject.vueMiniCart.addToCart(product);
+                },
             },
             mounted() {
                 this.getList();
