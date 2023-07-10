@@ -34,4 +34,27 @@ After that, being in the root directory of the project, run the command:
 php -S localhost:8080
 ```
 
+## Test routines
+
+The project has test routines on the front and backend
+
+To run them just (being in the root of the project) run the following commands
+
+[Back]
+
+```sh
+composer back-test
+```
+
+[Front]
+
+```sh
+npm run front-test
+```
+Or
+
+```sh
+yarn run front-test
+```
+
 ** Enjoy **

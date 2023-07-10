@@ -25,7 +25,7 @@ const login = {
 describe('Try login', () => {
     it('Try login', () => {
         login.goTo();
-        login.fill('Username', 'password');
+        login.fill('soft_expert_1', 'soft-expert');
         login.login();
         login.checkHome();
     });
