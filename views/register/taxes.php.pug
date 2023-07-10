@@ -16,7 +16,7 @@ block main
                         td {{ tax.name }}
                         td {{ tax.value }}
         h1 Taxes
-        form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
+        form.wrapper-2(@submit.prevent.cancel="killForm()")
             div.line
                 label ID
                 span 0
@@ -44,6 +44,9 @@ block main
                 };
             },
             methods: {
+                killForm() {
+                    return false;
+                },
                 getList() {
                     const vue = this;
                     const url = mainObject.getApiUrl('taxes');

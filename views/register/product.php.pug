@@ -24,7 +24,7 @@ block main
                         td {{ product.quantity }}
                 
         h1 Product
-        form.wrapper-2(@submit.prevent.cancel="main.killForm()")
+        form.wrapper-2(@submit.prevent.cancel="killForm()")
             div.line
                 label ID
                 span#id 0
@@ -71,6 +71,9 @@ block main
                 };
             },
             methods: {
+                killForm() {
+                    return false;
+                },
                 getList() {
                     const vue = this;
                     const url = mainObject.getApiUrl('products');
