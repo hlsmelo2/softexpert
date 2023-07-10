@@ -3,6 +3,11 @@ script.
         getApiUrl(endpoint) {
             return location.origin + '/api/' + endpoint;
         },
+        killLoader() {
+            const loader = document.querySelector('div#loader');
+
+            setTimeout(loader.parentElement.removeChild.bind(loader.parentElement, loader), 1000);
+        },
         killForm() {
             return false;
         },

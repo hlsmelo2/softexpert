@@ -1,0 +1,35 @@
+div#loader
+    div
+        h2 Soft Expert
+        img(src="/public/assets/images/loader.gif")
+style.
+    div#loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: #FFFFFF;
+        z-index: 1000;
+    }
+
+    div#loader > div {
+        width: 650px;
+        height: 143px;
+        margin: 200px auto 0;
+    }
+
+    div#loader h2,
+    div#loader img { margin: 0 auto; }
+
+    div#loader h2 {
+        font-size: 0;
+        background: url('/public/assets/images/soft-expert.gif') no-repeat 0 0 / 100% 100%;
+        height: 80px;
+        width: 80%;
+    }
+
+    div#loader img {
+        display: block;
+        height: 140px;
+    }
