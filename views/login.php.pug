@@ -4,7 +4,7 @@ block main
     section#login
         include components/warning.php
         h1 Login
-        form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
+        form.wrapper-2(@submit.prevent.cancel="killForm()")
             div.line
                 label Username or email
                 input(v-model="input.login.username" type="text" name="username" placeholder="Your username" class="form-control")
@@ -16,7 +16,7 @@ block main
                 a(@click="showHideCreationForm(true)" name="create" href="#") Create An User
         div#creation(v-show="canShowCreationForm")
             h1 Create new user
-            form.wrapper-2(@submit.prevent.cancel="mainObject.killForm()")
+            form.wrapper-2(@submit.prevent.cancel="killForm()")
                 div.line
                     label Username
                     input(v-model="input.register.username" type="text" name="username" placeholder="Username" class="form-control")
@@ -61,6 +61,9 @@ block main
                 };
             },
             methods: {
+                killForm() {
+                    return false;
+                },
                 showMessage(message) {
                     this.canShowMessage = true;
                     this.alertMessage = message;
@@ -100,6 +103,7 @@ block main
                     mainObject.getJSONRequest(url, 'POST', { body: vue.input.register })
                         .then(function(json) {                            
                             vue.showMessage(json.message);
+                            vue.showHideCreationForm(false);
                         });
                 },
             },
