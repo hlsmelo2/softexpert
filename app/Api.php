@@ -2,7 +2,8 @@
 
 namespace Work\Soft_Expert;
 
-use Work\Soft_Expert\DB\Models\Product;
+use Work\Soft_Expert\Controllers\ProductController;
+use Work\Soft_Expert\Controllers\SaleController;
 use Work\Soft_Expert\DB\Models\Product_Type;
 use Work\Soft_Expert\DB\Models\Sale;
 use Work\Soft_Expert\DB\Models\Tax;
@@ -29,17 +30,7 @@ class Api {
 
         return json_encode($safe_list);
     }
-    
-    static public function get_product($params): string {
-        return self::get_response('success', '', [
-            'product' => Product::get(self::get_params($params)),
-        ]);
-    }
 
-    static public function get_products($params): string {
-        return self::get_json_safe_list( Product::read( self::get_params($params) ) );        
-    }
-    
     static public function register_user($params) {
         $params = self::get_params($params);
 
@@ -65,38 +56,25 @@ class Api {
         ]);
     }
     
-    static public function logout($params) {
-        // kill tokns
-    }
-    
-    static public function register_sale($params) {
-        $params = self::get_params($params);
+    static public function logout() {
+        if (! AuthGuard::logout() ) {
+            return self::get_response('error', 'An error occurred when trying to sign out');
+        };
 
-        if ( ! Sale::create($params) ) {
-            return self::get_response('error', 'An error occurred while trying to register the sale');
+        return self::get_response('success', 'User logged out');
+    }
+
+    static public function register_tax($params) {
+        $params = self::get_params($params);
+        
+        if ( ! Tax::create($params) ) {
+            return self::get_response('error', 'An error occurred while trying to register the tax');
         };
 
         return self::get_response('success', '', [
-            'message' => 'The sale was registered',
+            'message' => 'The tax was registered',
             'args' => $params,
         ]);
-    }
-    
-    static public function register_product($params) {
-        $params = self::get_params($params);
-
-        if ( ! Product::create($params) ) {
-            return self::get_response('error', 'An error occurred while trying to register the product');
-        };
-
-        return self::get_response('success', '', [
-            'message' => 'The product was registered',
-            'args' => $params,
-        ]);
-    }
-
-    static public function get_product_types() {
-        return self::get_json_safe_list( Product_Type::read() );
     }
     
     static public function register_product_type($params) {
@@ -112,20 +90,47 @@ class Api {
         ]);
     }
 
+    static public function register_product($params) {
+        $params = self::get_params($params);
+
+        if ( ! ProductController::create($params) ) {
+            return self::get_response('error', 'An error occurred while trying to register the product');
+        };
+
+        return self::get_response('success', '', [
+            'message' => 'The product was registered',
+            'args' => $params,
+        ]);
+    }
+    
+    static public function register_sale($params) {
+        $params = self::get_params($params);
+
+        if ( ! Sale::create($params) ) {
+            return self::get_response('error', 'An error occurred while trying to register the sale');
+        };
+
+        return self::get_response('success', '', [
+            'message' => 'The sale was registered',
+            'args' => $params,
+        ]);
+    }
+
     static public function get_taxes() {
         return self::get_json_safe_list( Tax::read() );
     }
 
-    static public function register_tax($params) {
-        $params = self::get_params($params);
-        
-        if ( ! Tax::create($params) ) {
-            return self::get_response('error', 'An error occurred while trying to register the tax');
-        };
+    static public function get_product_types() {
+        return self::get_json_safe_list( Product_Type::read() );
+    }
 
+    static public function get_products($params): string {
+        return self::get_json_safe_list( ProductController::read( self::get_params($params) ) );        
+    }
+
+    static public function get_product($params): string {
         return self::get_response('success', '', [
-            'message' => 'The tax was registered',
-            'args' => $params,
+            'product' => ProductController::get(self::get_params($params)),
         ]);
-    } 
+    }
 }

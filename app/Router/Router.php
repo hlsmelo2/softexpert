@@ -12,7 +12,7 @@ use Work\Soft_Expert\Router\Routes\Web;
 class Router {
     static protected string $current_route = '';
 
-    static protected function get_current_route(): string {
+    static public function get_current_route(): string {
         if (self::$current_route !== '') {
             return self::$current_route;
         }

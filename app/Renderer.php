@@ -3,8 +3,24 @@
 namespace Work\Soft_Expert;
 
 use Phug\Phug;
+use Work\Soft_Expert\Router\Router;
 
 class Renderer {
+    static public function can_show_this(string $element): bool {
+        $table = [
+            'menu' => ['/login'],
+            'minicart' => ['/buy', '/login'],
+        ];
+
+        $route_path = Router:: get_current_route();
+
+        if ( !in_array($route_path, $table[$element] ) ) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     static protected function get_new_data($data): array {
         return ($data === null) ? [] : $data;
     }

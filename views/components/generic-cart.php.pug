@@ -2,7 +2,7 @@ section(id="$cart_page_type")
     if $cart_page_type !== 'minicart'
         include warning.php
     h1 {{ title }}
-    ul#list.wrapper-2(:class="{ open: isOpen }")
+    ul#list.wrapper-2(ref="list" :class="{ open: isOpen }")
         li(v-for="(item, index) of cart" :key="index" :class="{ 'card-style': !miniCart }")
             img(:src="item.product.image")
             div.data
@@ -35,14 +35,15 @@ section(id="$cart_page_type")
                     a(@click="removeFromCart(item.product, true)" href="#") Remove
         div#totals(v-if="miniCart")
             h2 Totals
-            div.line
-                label Total
-                span {{ getCurrency(total) }}
-            div.line
-                label Total Taxes
-                span {{ getCurrency(totalTaxes) }}
-            div.buttons
-                button(@click="goToChekout()" class="btn btn-primary") Go To Checkout
+            div
+                div.line
+                    label Total
+                    span {{ getCurrency(total) }}
+                div.line
+                    label Total Taxes
+                    span {{ getCurrency(totalTaxes) }}
+                div.buttons
+                    button(@click="goToChekout()" class="btn btn-primary") Go To Checkout
     div#totals(v-if="!miniCart")
         h2 Totals
         div
@@ -61,6 +62,8 @@ script.
         el: getCartData().el,
         data() {
             return {
+                rootElement: null,
+                touchEvent: 'touchstart',
                 isOpen: false,
                 canHandleMove: false,
                 miniCart: true,
@@ -72,15 +75,40 @@ script.
             };
         },
         methods: {
+            isMobile() {
+                return window.innerWidth < 768;
+            },
             open() {
+                if (this.isMobile()) {
+                    const vue = this;
+                    const root = vue.rootElement;
+
+                    root.classList.add('open-mobile');
+                    root.removeEventListener(vue.touchEvent, vue.open);
+                    
+                    setTimeout(function() {
+                        root.addEventListener(vue.touchEvent, vue.close);
+                    }, 10);
+
+                    return;
+                }
+
                 this.isOpen = true;
                 window.addEventListener('mouseover', this.moveHandler);
             },
-            close() {
+            close(aEvent) {
                 this.isOpen = false;
+                
+                if (this.isMobile() && !aEvent.composedPath().includes(this.$refs.list) ) {
+                    const root = this.rootElement;
+
+                    root.classList.remove('open-mobile');
+                    root.removeEventListener(this.touchEvent, this.close);
+                    root.addEventListener(this.touchEvent, this.open);
+                }
             },
             moveHandler(moveEvent) {
-                const inPath = moveEvent.composedPath().includes(this.$el.parentNode);
+                const inPath = moveEvent.composedPath().includes(this.rootElement);
 
                 if (!this.canHandleMove && !inPath) {
                     return;
@@ -246,7 +274,9 @@ script.
         mounted() {
             const cart = localStorage.getItem('cart');
             
-            this.miniCart = this.$el.parentNode.id === 'minicart';
+            this.rootElement = this.$el.parentNode;
+            this.rootElement.addEventListener(this.touchEvent, this.open);
+            this.miniCart = this.rootElement.id === 'minicart';
             this.cart = (cart === null) ? [] : JSON.parse(cart);
             this.updateCart();
         },

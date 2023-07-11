@@ -31,8 +31,28 @@ psql -U user -d dbname < softexpert
 After that, being in the root directory of the project, run the command:
 
 ```sh
+composer install
+```
+
+The above command will install all PHP dependencies. Then run the command:
+
+```sh
+npm install
+```
+
+Or
+
+```sh
+yarn install
+```
+
+to install the project's Javascript dependencies. And finally run the command:
+
+```sh
 php -S localhost:8080
 ```
+
+Now just access the address http://localhost:8080 in your browser
 
 ## Test routines
 
