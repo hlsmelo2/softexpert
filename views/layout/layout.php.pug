@@ -1,3 +1,6 @@
+- $can_show_menu = \Work\Soft_Expert\Renderer::can_show_this('menu')
+- $can_show_minicart = \Work\Soft_Expert\Renderer::can_show_this('minicart')
+
 doctype html
 html(lang="en")
     head
@@ -6,15 +9,20 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title The SoftExpress Test
         include libraries.php
-        include ../assets/header-scripts.php
+        script
+            include ../../public/assets/scripts/main.js
+        style
+            include ../../public/assets/styles/main.css
     body
         main
             include ../components/loader.php
             header
                 h1#logo Soft Expert
-                include menu.php
-                if explode('?', $_SERVER['REQUEST_URI'])[0] !== '/buy' 
+                if $can_show_menu 
+                    include menu.php
+                if $can_show_minicart 
                     include ../components/minicart.php
             block main
             footer
-                include ../assets/footer-scripts.php
+                script(name="footer-scripts").
+                    mainObject.killLoader();

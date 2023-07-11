@@ -35,13 +35,7 @@ class AuthGuard {
             'email' => $email,
         ];
     }
-    
-    static protected function write_session(string $property, $data): void {
-        session_start();
-        $_SESSION[$property] = $data;
-        session_write_close();
-    }
-    
+        
     static public function get_login_token(object $params): string | null {
         $user_trying_login = self::get_user_trying_login($params);
 
@@ -53,19 +47,15 @@ class AuthGuard {
         $payload = self::get_payload( $user_trying_login[0]['email'] );
         $token_ob = JWT::encode($payload, self::KEY, self::ALGORITHM);
         $token = json_encode($token_ob);
-        self::write_session('token', $token);
-
+        Session::write('token', $token);
+        
         return $token;
     }
     
-    static protected function read_session($property) {
-        session_start();
-        $token = isset($_SESSION[$property]) ? $_SESSION[$property] : null;
-        session_write_close();
-
-        return $token;
+    static public function logout(): bool {
+        return Session::delete('token');
     }
-
+    
     static protected function get_api_token(): string | null {
         if ( ! isset($_SERVER['HTTP_AUTHORIZATION']) ) {
             return null;
@@ -75,7 +65,7 @@ class AuthGuard {
     }
 
     static protected function get_web_token(): string | null {        
-        return self::read_session('token');
+        return Session::read('token');
     }
 
     static protected function handle_web_route(object $route, $token): bool {

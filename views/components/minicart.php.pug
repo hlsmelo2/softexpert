@@ -6,26 +6,6 @@ script.
                 title: '',
             };
         }
-style.
-    section#minicart {
-        height: 40px;
-        width: 40px;
-        float: right;
-        position: relative;
-        background: url("/public/assets/images/cart.png") no-repeat 0 0 / 100% 100%;
-    }
-
-    section#minicart ul#list {
-        width: 300px;
-        position: absolute;
-        right: 0;
-        max-height: 400px;
-        display: none;
-        right: -132px;
-        margin-top: 30px;
-        padding-top: 15px;
-    }
-
-    section#minicart:hover ul#list,
-    section#minicart ul#list.open { display: block; }
+style
+    include ../../public/assets/styles/minicart.css
 include generic-cart.php

@@ -2,45 +2,30 @@
 
 namespace Work\Soft_Expert\DB\Models;
 
-use Symfony\Component\VarDumper\VarDumper;
+use Work\Soft_Expert\Controllers\SaleController;
 use Work\Soft_Expert\DB\DB;
+use Work\Soft_Expert\DB\Model;
 
-class Sale {
+class Sale extends Model {
     const TABLE_NAME = 'sales';
 
-    static public function read(): array {
-        return DB::read('SELECT * FROM se_sales');
-    }
-    
-    static public function create(array $data) {
-        $query = sprintf(
-            'INSERT INTO se_sales (total, total_taxes) VALUES (%s,%s) RETURNING id',
-            $data['total'],
-            $data['total_taxes'],
-        );
-
-        $sale_id = DB::execute($query);
-        $sale_id = count($sale_id) > 0 ? $sale_id[0]['id'] : 0;
-        $cart = json_decode($data['cart'], true);
+    static public function create(array $data, bool $return_id = false): bool {
+        $cart = $data['cart'];
+        unset($data['cart']);
+        // $sale_id = DB::execute( self::get_returning_query_insert($data) );
+        $sale_id = DB::create(self::TABLE_NAME, $data, true);
+        // $sale_id = count($sale_id) > 0 ? $sale_id[0]['id'] : 0;
+        $cart_data = !is_string($cart) ? $cart : json_decode($cart, true);
         
-        foreach ($cart as $item) {
-            $item['sale_id'] = $sale_id;
-            unset($item['product']);
-
-            
-            if ( !Sale_Product::create($item) ) {
+        
+        foreach ($cart_data as $item) {
+            if ( 
+                !Sale_Product::create( SaleController::get_new_item($item, $sale_id) )
+            ) {
                 return false;
             }
         }
 
         return true;
-    }
-    
-    static public function update(array $data) {
-        DB::create(self::TABLE_NAME, $data);
-    }
-    
-    static public function delete(array $data) {
-        DB::delete(self::TABLE_NAME, $data);
     }
 }
