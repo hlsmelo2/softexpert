@@ -23,3 +23,18 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+const commands = {
+    env(key) {
+        return Cypress.env(key);
+    },
+    get(selector, index) {
+        if (index === undefined) {
+            return cy.get(selector);
+        }
+
+        return cy.get(selector).eq(index);
+    },
+};
+
+module.exports = commands;

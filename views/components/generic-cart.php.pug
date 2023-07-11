@@ -33,18 +33,7 @@ section(id="$cart_page_type")
                     span.subtotal-tax {{ item.subtotalTaxes }}
                 div.buttons
                     a(@click="removeFromCart(item.product, true)" href="#") Remove
-        div#totals(v-if="miniCart")
-            h2 Totals
-            div
-                div.line
-                    label Total
-                    span {{ getCurrency(total) }}
-                div.line
-                    label Total Taxes
-                    span {{ getCurrency(totalTaxes) }}
-                div.buttons
-                    button(@click="goToChekout()" class="btn btn-primary") Go To Checkout
-    div#totals(v-if="!miniCart")
+    div#totals()
         h2 Totals
         div
             div.line
@@ -54,7 +43,8 @@ section(id="$cart_page_type")
                 label Total Taxes
                 span {{ getCurrency(totalTaxes) }}
             div.line
-                button(@click="register()" class="btn btn-primary") Buy
+                button(v-if="miniCart" @click="goToChekout()" class="btn btn-primary") Go To Checkout
+                button(v-if="!miniCart" @click="register()" class="btn btn-primary") Buy
 style
     include public/assets/styles/cart.css
 script.

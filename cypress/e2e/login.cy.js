@@ -1,32 +1,28 @@
-const login = {
-    goTo() {
-        cy.log('Go to login screen');
-        cy.visit('/');
-    },
-    fill(username, password) {
-        cy.log('Fill user and password');
-
-        const usernameElement = cy.get('section#login input[name="username"]').eq(0);
-        const passwordElement = cy.get('section#login input[name="password"]').eq(0);
-            
-        usernameElement.type(username);
-        passwordElement.type(password);
-    },
-    login() {
-        cy.log('Try login');
-        cy.get('section#login button[name="login"]').click();
-    },   
-    checkHome() {
-        cy.log('Check if is in home');
-        cy.get('section#home h2').contains('Lista de produtos');
-    },
-};
+const commands = require("../support/commands");
+const actions = require("../support/system/front/actions");
 
 describe('Try login', () => {
-    it('Try login', () => {
-        login.goTo();
-        login.fill('soft_expert_1', 'soft_expert_1');
-        login.login();
-        login.checkHome();
+    beforeEach(() => {
+        actions.login.goTo();
+    });
+
+    it('Try to login correctly', () => {
+        actions.login.login(commands.env('username'), commands.env('password'));
+        actions.login.checkHome();
+    });
+
+    it('Try to log in with incorrect credentials', () => {
+        actions.login.login(commands.env('username'), commands.env('wrongPassword'));
+        actions.application.checkMessage('Login or password is wrong');
+    });
+
+    it('Try to login with blank username', () => {
+        actions.login.login('', commands.env('password'));
+        actions.application.checkMessage('Login or password is wrong');
+    });
+
+    it('Try to login with blank password', () => {
+        actions.login.login(commands.env('username'), '');
+        actions.application.checkMessage('Login or password is wrong');
     });
 });
