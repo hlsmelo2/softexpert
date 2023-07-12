@@ -23,6 +23,12 @@ class ProductTest extends TestCase {
         return count($products);
     }
     
+    public function test_if_be_able_to_get_one_product() {
+        $product = Helpers::json_parse(Api::get_product([ 'product_id' => [1] ]));
+        $this->assertIsArray($product);
+        $this->assertArrayHasKey('product', $product);
+    }
+    
     public function test_to_insert_products(): void {
         $this->init();
         $count = $this->products_count + 1;

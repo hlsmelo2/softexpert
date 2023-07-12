@@ -1,50 +1,51 @@
 section(id="$cart_page_type")
-    if $cart_page_type !== 'minicart'
-        include warning.php
-    h1 {{ title }}
-    ul#list.wrapper-2(ref="list" :class="{ open: isOpen }")
-        li(v-for="(item, index) of cart" :key="index" :class="{ 'card-style': !miniCart }")
-            img(:src="item.product.image")
-            div.data
+    div(ref="popup" :class="{ open: isOpen }")
+        if $cart_page_type !== 'minicart'
+            include warning.php
+        h1 {{ title }}
+        ul#list.wrapper-2
+            li(v-for="(item, index) of cart" :key="index" :class="{ 'card-style': !miniCart }")
+                img(:src="item.product.image")
+                div.data
+                    div.line
+                        label ID
+                        span.id {{ item.product.id }}
+                    div.line
+                        label Name
+                        span.name {{ item.product.name }}
+                    div.line
+                        label Price
+                        span.price {{ item.product.price }}
+                    div.line(v-if="!miniCart")
+                        label Type
+                        span.type_name {{ item.product.type_name }}
+                    div.line(v-if="!miniCart")
+                        label Tax
+                        span.tax {{ killSymbol(item.product.tax) }}%
+                    div.line
+                        label Quantity
+                        span.quantity(v-if="miniCart") {{ item.quantity }}
+                        input(v-if="!miniCart" v-model="item.quantity" type="number")
+                    div.line(v-if="!miniCart")
+                        label Subtotal
+                        span.subtotal {{ item.subtotal }}
+                    div.line(v-if="!miniCart")
+                        label Subtotal Taxes
+                        span.subtotal-tax {{ item.subtotalTaxes }}
+                    div.buttons
+                        a(@click="removeFromCart(item.product, true)" href="#") Remove
+        div#totals
+            h2 Totals
+            div
                 div.line
-                    label ID
-                    span.id {{ item.product.id }}
+                    label Total
+                    span {{ getCurrency(total) }}
                 div.line
-                    label Name
-                    span.name {{ item.product.name }}
+                    label Total Taxes
+                    span {{ getCurrency(totalTaxes) }}
                 div.line
-                    label Price
-                    span.price {{ item.product.price }}
-                div.line(v-if="!miniCart")
-                    label Type
-                    span.type_name {{ item.product.type_name }}
-                div.line(v-if="!miniCart")
-                    label Tax
-                    span.tax {{ killSymbol(item.product.tax) }}%
-                div.line
-                    label Quantity
-                    span.quantity(v-if="miniCart") {{ item.quantity }}
-                    input(v-if="!miniCart" v-model="item.quantity" type="number")
-                div.line(v-if="!miniCart")
-                    label Subtotal
-                    span.subtotal {{ item.subtotal }}
-                div.line(v-if="!miniCart")
-                    label Subtotal Taxes
-                    span.subtotal-tax {{ item.subtotalTaxes }}
-                div.buttons
-                    a(@click="removeFromCart(item.product, true)" href="#") Remove
-    div#totals()
-        h2 Totals
-        div
-            div.line
-                label Total
-                span {{ getCurrency(total) }}
-            div.line
-                label Total Taxes
-                span {{ getCurrency(totalTaxes) }}
-            div.line
-                button(v-if="miniCart" @click="goToChekout()" class="btn btn-primary") Go To Checkout
-                button(v-if="!miniCart" @click="register()" class="btn btn-primary") Buy
+                    button(v-if="miniCart" @click="goToChekout()" class="btn btn-primary") Go To Checkout
+                    button(v-if="!miniCart" @click="register()" class="btn btn-primary") Buy
 style
     include public/assets/styles/cart.css
 script.
@@ -69,8 +70,11 @@ script.
                 return window.innerWidth < 768;
             },
             open() {
-                if (this.isMobile()) {
-                    const vue = this;
+                const vue = this;
+                
+                vue.isOpen = true;
+
+                if (vue.isMobile()) {
                     const root = vue.rootElement;
 
                     root.classList.add('open-mobile');
@@ -78,23 +82,26 @@ script.
                     
                     setTimeout(function() {
                         root.addEventListener(vue.touchEvent, vue.close);
-                    }, 10);
-
+                    }, 100);
+                    
                     return;
                 }
 
-                this.isOpen = true;
-                window.addEventListener('mouseover', this.moveHandler);
+                window.addEventListener('mouseover', vue.moveHandler);
             },
             close(aEvent) {
-                this.isOpen = false;
+                const vue = this;
+                vue.isOpen = false;
                 
-                if (this.isMobile() && !aEvent.composedPath().includes(this.$refs.list) ) {
-                    const root = this.rootElement;
+                if (vue.isMobile() && !aEvent.composedPath().includes(vue.$refs.popup) ) {
+                    const root = vue.rootElement;
 
                     root.classList.remove('open-mobile');
-                    root.removeEventListener(this.touchEvent, this.close);
-                    root.addEventListener(this.touchEvent, this.open);
+                    root.removeEventListener(vue.touchEvent, vue.close);
+                    
+                    setTimeout(function() {
+                        root.addEventListener(vue.touchEvent, vue.open);
+                    }, 100);
                 }
             },
             moveHandler(moveEvent) {

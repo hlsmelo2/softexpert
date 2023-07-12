@@ -41,7 +41,8 @@ class DB {
     }
         
     static public function read_one(array $data): array {
-        return self::get_connection()->fetchOne($data['query']);
+        $fetch = self::get_connection()->fetchAllAssociative($data['query']);
+        return count($fetch) > 0 ? $fetch[0] : [];
     }
 
     static public function read(array $data): array {

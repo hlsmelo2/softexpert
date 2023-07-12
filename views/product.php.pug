@@ -24,23 +24,8 @@ block main
                     label Quantity
                     input(v-model="input.quantity" type="number")
             button(@click="addToCart()" class="btn btn-primary") Add To Cart
-    style.
-        section#product img,
-        section#product button { display: block; }
-        
-        section#product img {
-            width: 40%;
-            margin: 0 auto;
-        }
-        
-        section#product div.data {
-            width: 30%;
-            margin: 30px auto 40px;
-        }
-        
-        section#product label { width: 130px; }
-        section#product input { width: calc(100% - 130px); }
-        section#product button { margin: 0 auto 40px; }
+    style
+        include public/assets/styles/product.css
     script.
        mainObject.vue = {
             el: 'section#product',
@@ -70,7 +55,7 @@ block main
                     const url = mainObject.getApiUrl('product/' + id);
 
                    mainObject.getJSONRequest(url, 'GET')
-                        .then(function(json) { vue.product = json.product[0]; });
+                        .then(function(json) { vue.product = json.product; });
                 },
             },
             mounted() {

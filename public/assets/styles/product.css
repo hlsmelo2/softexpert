@@ -1,0 +1,21 @@
+section#product img,
+section#product button { display: block; }
+
+section#product img {
+    width: 40%;
+    margin: 0 auto;
+}
+
+section#product div.data {
+    width: 30%;
+    margin: 30px auto 40px;
+}
+
+section#product label { width: 130px; }
+section#product input { width: calc(100% - 130px); }
+section#product button { margin: 0 auto 40px; }
+
+
+@media screen and (min-width: 100px) and (max-width: 768px) {
+    section#product div.data { width: 100%; }
+}

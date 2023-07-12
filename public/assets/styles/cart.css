@@ -9,24 +9,32 @@ section#cart label {
     width: 128px;
 }
 
+section#cart label + input { width: calc(100% - 128px); }
+
 
 ul#list,
 ul#list ul { list-style-type: none; }
 
 
-section#cart:not(.mini-view) img,
-section#cart:not(.mini-view) div.data {
+section#cart img,
+section#cart div.data {
     display: inline-block;
     vertical-align: top;
     width: 50%;
 }
 
-section#cart:not(.mini-view) img {
+section#cart img {
     margin-right: 34px;
     width: 33%;
 }
 
-section#cart:not(.mini-view) ul#list li { margin-bottom: 60px; }
+section#cart ul#list span {
+    text-align: end;
+    width: calc(100% - 128px);
+    display: inline-block;
+}
+
+section#cart ul#list li { margin-bottom: 60px; }
 
 div#totals h2,
 div#totals div.line { margin-bottom: 15px; }
@@ -37,13 +45,22 @@ div#totals h2 + div {
 }
 
 
-section#cart.mini-view ul#list {
-    width: 340px;
-    padding: 0;
-}
+@media screen and (min-width: 100px) and (max-width: 768px) {
+    section#minicart > div {
+        position: static;
+        margin: 100px auto 0;
+    }
 
-section#cart.mini-view ul#list li {
-    margin: 0;
-    border-bottom: 1px solid #000;
-    padding: 8px 0 12px 0;
+    div#totals h2 + div { width: 80%; }
+
+    section#cart img,
+    section#cart div.data {
+        display: block;
+        width: 100%;
+    }
+
+    section#cart img {
+        margin: 0 auto;
+        width: 70%;
+    }
 }
